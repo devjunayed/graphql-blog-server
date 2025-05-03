@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { jwtHelper } from "../../utils/jwtHelper";
+import config from "../../config";
+
+console.log(config);
 
 const prisma = new PrismaClient();
 let userError = "";
-dotenv.config();
 
 export const resolvers = {
   Query: {
@@ -25,18 +25,17 @@ export const resolvers = {
   },
   Mutation: {
     signup: async (parent: any, args: any, context: any) => {
-
       const isExist = await prisma.user.findFirst({
         where: {
-          email: args.email
-        }
-      })
+          email: args.email,
+        },
+      });
 
-      if(isExist){
+      if (isExist) {
         return {
           userError: "Alreadyl this emails is registered!",
-          token: null
-        }
+          token: null,
+        };
       }
 
       const hashedPassword = await bcrypt.hash(args.password, 12);
@@ -48,14 +47,18 @@ export const resolvers = {
         },
       });
 
-      const generatedToken = await jwtHelper.sign({userId: result.id as number})
+      const generatedToken = await jwtHelper.sign(
+        {
+          userId: result.id as number,
+        },
+        config.jwt.secret as string
+      );
 
       return {
         token: generatedToken,
       };
     },
     signin: async (parent: any, args: any, context: any) => {
-      
       const user = await prisma.user.findFirst({
         where: {
           email: args.email,
@@ -81,8 +84,12 @@ export const resolvers = {
         };
       }
 
-       const generatedToken = await jwtHelper.sign({userId: user.id as number})
-
+      const generatedToken = await jwtHelper.sign(
+        {
+          userId: user.id as number,
+        },
+        config.jwt.secret as string
+      );
 
       return { userError: null, token: generatedToken };
     },
