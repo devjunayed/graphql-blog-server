@@ -11,7 +11,7 @@ const server = new ApolloServer({
   resolvers,
 });
 
-interface PrismaContext{
+export interface PrismaContext{
   prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>
 }
 
@@ -19,7 +19,8 @@ async function  main() {
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
-    context: async (): Promise<PrismaContext> => {
+    context: async ({req}): Promise<PrismaContext> => {
+      console.log(req.headers.authorization)
       return{
         prisma
       }

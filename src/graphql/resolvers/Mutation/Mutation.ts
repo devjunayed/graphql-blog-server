@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { jwtHelper } from '../../../utils/jwtHelper';
 import config from "../../../config";
+import { PrismaContext } from "../../..";
 
 
 export interface userInfo {
@@ -91,4 +92,13 @@ export const Mutation = {
 
       return { userError: null, token: generatedToken };
     },
+    addPost: async(parent: any, args: any, {prisma}: PrismaContext) => {
+      // const result = await prisma.post.create({
+      //   data: {
+      //     title: args.title,
+      //     content: args.content,
+
+      //   }
+      // })
+    }
   };
