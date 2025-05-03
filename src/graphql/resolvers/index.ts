@@ -1,9 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { tokenToString } from "typescript";
+import dotenv from "dotenv";
+import { jwtHelper } from "../../utils/jwtHelper";
 
 const prisma = new PrismaClient();
+let userError = "";
+dotenv.config();
 
 export const resolvers = {
   Query: {
@@ -12,7 +15,6 @@ export const resolvers = {
       return result;
     },
     user: async (parent: any, args: any, context: any) => {
-      console.log(args);
       const result = await prisma.user.findFirst({
         where: {
           id: Number(args.id),
@@ -23,6 +25,20 @@ export const resolvers = {
   },
   Mutation: {
     signup: async (parent: any, args: any, context: any) => {
+
+      const isExist = await prisma.user.findFirst({
+        where: {
+          email: args.email
+        }
+      })
+
+      if(isExist){
+        return {
+          userError: "Alreadyl this emails is registered!",
+          token: null
+        }
+      }
+
       const hashedPassword = await bcrypt.hash(args.password, 12);
 
       const result = await prisma.user.create({
@@ -32,18 +48,43 @@ export const resolvers = {
         },
       });
 
-      const generatedToken = jwt.sign(
-        result,
-        "a13a33e76be205cce064a1163a044491c2b7f4b0ff940550a9052fbc85bbe0e0",
-        {
-          expiresIn: "1d",
-        }
-      );
+      const generatedToken = await jwtHelper.sign({userId: result.id as number})
 
       return {
-        data: result,
-        token: generatedToken
+        token: generatedToken,
       };
+    },
+    signin: async (parent: any, args: any, context: any) => {
+      
+      const user = await prisma.user.findFirst({
+        where: {
+          email: args.email,
+        },
+      });
+
+      if (!user) {
+        return {
+          userError: "User not found!",
+          token: null,
+        };
+      }
+
+      const verifiedPassword = await bcrypt.compare(
+        args.password,
+        user.password
+      );
+
+      if (!verifiedPassword) {
+        return {
+          userError: "User not found",
+          token: null,
+        };
+      }
+
+       const generatedToken = await jwtHelper.sign({userId: user.id as number})
+
+
+      return { userError: null, token: generatedToken };
     },
   },
 };
