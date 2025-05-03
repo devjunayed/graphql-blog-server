@@ -20,8 +20,8 @@ export const typeDefs = `#graphql
     id: ID!
     bio: String!
     createdAt: String!
-    user: User!
- }
+    user: User
+ } 
 
  type AuthPayload{
    userError: String
@@ -34,11 +34,11 @@ export const typeDefs = `#graphql
     users: [User!]!
     user(id: String!): User!
     profiles: [Profile!]!
-
+    profile(id: String!): Profile!
  }
 
  type Mutation{
-   signup(name: String!, email: String!, password: String!): AuthPayload!
+   signup(name: String!, email: String!, password: String!, bio: String): AuthPayload!
    signin (email: String!, password: String!): AuthPayload!
  }
 `;
