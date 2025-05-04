@@ -1,3 +1,4 @@
+import { PrismaContext } from "../../..";
 
 
 export const Query =  {
@@ -5,10 +6,10 @@ export const Query =  {
       const result = await prisma.user.findMany();
       return result;
     },
-    user: async (parent: any, args: any, {prisma}: any) => {
-      const result = await prisma.user.findFirst({
+    me: async (parent: any, args: any, {prisma, userData}: PrismaContext) => {
+      const result = await prisma.user.findUnique({
         where: {
-          id: Number(args.id),
+          id: Number(userData.userId),
         },
         include: {
           profile: true,
@@ -28,4 +29,19 @@ export const Query =  {
       });
       return result;
     },
+    posts: async(parent: any, args: any, {prisma}: PrismaContext) => {
+      return await prisma.post.findMany({
+        where: {
+          published: true
+        },
+        include: {
+          author: true
+        },
+        orderBy: [
+          {
+            createdAt: 'asc'
+          }
+        ]
+      });
+    }
   };

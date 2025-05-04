@@ -13,6 +13,7 @@ export const typeDefs = `#graphql
     name: String!
     email: String!
     posts: [Post]
+    profile: Profile
     createdAt: String!
  }
 
@@ -28,7 +29,7 @@ export const typeDefs = `#graphql
  type Query{
     posts: [Post!]!
     users: [User!]!
-    user(id: String!): User!
+    me: User!
     profiles: [Profile!]!
     profile(id: String!): Profile!
  }
