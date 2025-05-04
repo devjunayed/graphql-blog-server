@@ -41,12 +41,26 @@ export const typeDefs = `#graphql
 
  type PostPayload{
    userError: String
-   post: Post!
+   post: Post
+ }
+
+ input PostInput{
+   title: String
+   content: String
  }
 
  type Mutation{
+
    signup(name: String!, email: String!, password: String!, bio: String): AuthPayload!
+
    signin (email: String!, password: String!): AuthPayload!
-   addPost(title: String!, content: String!): PostPayload!
+
+   addPost(post: PostInput!): PostPayload!
+
+   updatePost(postId: ID!, post: PostInput ): PostPayload!
+
+   deletePost(postId: ID!): PostPayload!
+
+   publishPost(postId: ID!) : PostPayload!
  }
 `;
