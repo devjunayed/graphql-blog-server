@@ -10,11 +10,8 @@ export const Query =  {
       const result = await prisma.user.findUnique({
         where: {
           id: Number(userData.userId),
-        },
-        include: {
-          profile: true,
-          posts: true
         }
+   
       });
       return result;
     },
@@ -23,9 +20,7 @@ export const Query =  {
         where: {
           userId: Number(args.id),
         },
-        include:{
-          user: true
-        }
+       
       });
       return result;
     },
@@ -34,9 +29,7 @@ export const Query =  {
         where: {
           published: true
         },
-        include: {
-          author: true
-        },
+       
         orderBy: [
           {
             createdAt: 'asc'

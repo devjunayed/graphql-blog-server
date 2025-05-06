@@ -3,7 +3,7 @@ export const typeDefs = `#graphql
     id: ID!
     title: String!
     content: String!
-    author: User!
+    author: User
     published: Boolean!
     createdAt: String!
  }
@@ -29,8 +29,8 @@ export const typeDefs = `#graphql
  type Query{
     posts: [Post!]!
     users: [User!]!
-    me: User!
-    profiles: [Profile!]!
+    me: User
+    profiles: [Profile!]
     profile(id: String!): Profile!
  }
 
