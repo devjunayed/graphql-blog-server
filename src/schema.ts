@@ -31,7 +31,7 @@ export const typeDefs = `#graphql
     users: [User!]!
     me: User
     profiles: [Profile!]
-    profile(id: String!): Profile!
+    profile(id: String!): Profile
  }
 
  type AuthPayload{
