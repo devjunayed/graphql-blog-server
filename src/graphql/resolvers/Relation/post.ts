@@ -1,4 +1,5 @@
 import { PrismaContext } from "../../..";
+import { userLoader } from "../../../dataLoaders/userLoader";
 
 export const Post = {
   author: async (
@@ -6,11 +7,7 @@ export const Post = {
     args: any,
     { prisma, userData }: PrismaContext
   ) => {
-    return await prisma.user.findUnique({
-        where: {
-            id: Number(parent.authorId)
-        }
-    })
+    return userLoader.load(parent.authorId)
   }
  
 };

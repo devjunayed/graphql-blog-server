@@ -7,7 +7,7 @@ import { DefaultArgs } from "@prisma/client/runtime/library";
 import { jwtHelper } from "./utils/jwtHelper";
 import config from "./config";
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
